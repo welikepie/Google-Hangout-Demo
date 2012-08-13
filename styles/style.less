@@ -1,0 +1,119 @@
+@charset 'utf-8';
+@import 'reset';
+
+@base: 16px;
+@gutter: 16px;
+@siteWidth: 900px;
+@moduleNum: 3;
+@font: Arial, Helvetica, sans-serif;
+
+html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+body {
+    width: @siteWidth;
+    margin: @base;
+    
+    color: #333;
+    font-family: @font;
+    font-size: @base * 0.75;
+    font-weight: normal;
+    line-height: @base;
+    
+    h1 {
+        font-size: @base * 1.5;
+        line-height: @base * 1.5;
+    }
+    
+    h1, h2, p {
+        margin: 0 0 @base * 0.5;
+    }
+}
+
+#modules {
+    width: @siteWidth;
+    margin: (@base * 2) 0 0;
+    padding: @base 0 0 @base;
+    overflow: hidden;
+    
+    border: 1px solid #999;
+    background: #FAFAFA;
+    
+    > section {
+        width: floor((@siteWidth - (@base * (@moduleNum + 1))) / 3);
+        margin: 0 @base @base 0;
+        padding: (@base * 0.5);
+        float: left;
+        
+        border: 1px solid #999;
+        background: #FFF;
+        
+        > h1, > h2 {
+            margin: 0 (@base * -0.5) (@base * 0.5);
+            padding: 0 (@base * 0.5) (@base * 0.5);
+            border-bottom: 1px solid #999;
+            
+            font-size: @base;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            line-height: @base;
+        }
+        
+    }
+}
+
+#participants {
+    ul {
+        display: block;
+        margin: 0;
+        padding: 0;
+        
+        li {
+            display: block;
+            overflow: hidden;
+            
+            margin-top: @base;
+            padding-top: @base;
+            border-top: 1px solid #AAA;
+            
+            opacity: 1;
+            &.disabled { opacity: 0.6; }
+            
+            img {
+                width: 60px + (@base * 0.5);
+                float: left;
+                margin-right: @base;
+                padding-right: (@base * 0.5);
+                border-right: 1px solid #AAA;
+            }
+            table {
+                td { height: 20px; }
+                th { display: none; }
+                .capabilities span {
+                    padding: @base * 0.125;
+                    color: white;
+                    background: #666;
+                    border-radius: @base * 0.25;
+                }
+            }
+        }
+    }
+}
+
+#state {
+    fieldset {
+        margin: @base 0;
+        div + div { margin-top: @base * 0.25; }
+        button { width: 10%; }
+        input {
+            &[readonly] { border-color: white; }
+            &.key { width: 35%; }
+            &.value { width: 50%; }
+        }
+    }
+    .add { float: left; width: 45%; }
+    .submit { float: right; width: 45%; }
+}
