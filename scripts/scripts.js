@@ -1,23 +1,20 @@
 /*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, strict:true, undef:true, unused:true, curly:true, browser:true, devel:true, indent:4, maxerr:50 */
-/*global x$:true, gapi:true */
+/*global $:true, gapi:true */
 
 (function () {
     "use strict";
-
-    Array.toArray = function (iterable) {
-        return Array.prototype.slice.apply(iterable);
-    };
     
     var participants = {
-            'list': x$('section#participants ul'),
-            'template': x$('section#participants ul li.template')
+            'list': Object.extended(),
+            'parent': $('section#participants ul'),
+            'template': $('section#participants ul li.template')
                 .remove().removeClass('template'),
             'update': null,
             'appUpdate': null
         },
         state = {
-            'fieldset': x$('section#state fieldset'),
-            'template': x$('section#state fieldset div.template')
+            'fieldset': $('section#state fieldset'),
+            'template': $('section#state fieldset div.template')
                 .remove().removeClass('template'),
             'update': null
         },
@@ -26,81 +23,121 @@
         state_init,
         init;
     
-    participants.update = function (participants) {
+    /**
+     * This function handles the change in the number of participants,
+     * is executed both at the page load and every time the onParticipantsChanged
+     * event is triggered.
+     * It takes the new list of participants and compares it to the list of participants
+     * rendered client-side. Entries that only appear in the update are queued for addition,
+     * entries that only appear in the client are queued for removal.
+     */
+    participants.update = function (updated) {
     
-        var current_list,
-            add_list,
+        var add_list,
             remove_list;
         
         try {
     
-            // Determine the status of users
-            current_list = Array.toArray(x$('section#participants ul li'));
-            add_list = participants.map('id').subtract(current_list.map('id'));
-            remove_list = current_list.map('id').subtract(participants.map('id'));
+            // Ensures the work both with manual input and with event
+            if (typeof updated.participants !== 'undefined') {
+                updated = updated.participants;
+            }
             
-            // Remove all old participants
-            current_list
-                .map(function (x) { return remove_list.some(x.id); })
-                .each(function (x) { x$(x).remove(); });
+            (function () {
             
-            // Add all new participants
-            participants
-                .map(function (x) { return add_list.some(x.id); })
-                .each(function (x) {
+                var new_entries = updated.map('id').subtract(participants.list.keys()),
+                    old_entries = participants.list.keys().subtract(updated.map('id'));
                 
-                    var el = participants.template.clone();
-                    
-                    el.attr('id', x.id);
-                    if (!x.hasAppEnabled) { el.addClass('disabled'); }
-                    
-                    el.find('.name').html('inner', x.person.displayName);
-                    el.find('img').attr('alt', x.person.displayName);
-                    
-                    if (x.person.image && x.person.image.url) {
-                        el.find('img').attr('src', x.person.image.url + '?sz=60');
-                    }
-                    
-                    if (x.hasMicrophone) { el.find('.capabilities').html('bottom', '<span>Microphone<span> '); }
-                    if (x.hasCamera) { el.find('.capabilities').html('bottom', '<span>Camera</span> '); }
-                    
-                    el.find('.link').html('inner', '<a href="' + x.person.url + '">Profile</a>');
-                    
-                    participants.list.html('bottom', el);
+                // Add list is the array of Participant objects from Google Hangout API.
+                // Remove list is the array of participant IDs, by which the page elements are stored.
+                add_list = updated.filter(function (x) { return new_entries.some(x.id); });
+                remove_list = old_entries;
+            
+            }());
+            
+            // Remove any lingering old entries first
+            remove_list.each(function (key) {
+                $(participants.list[key]).remove();
+                delete participants.list[key];
+            });
+            
+            // Add new entries
+            add_list.each(function (x) {
+            
+                var el = participants.template.clone();
                 
-                });
-    
+                if (!x.hasAppEnabled) { el.addClass('disabled'); }
+                
+                el.find('.name').html(x.person.displayName);
+                el.find('img').attr('alt', x.person.displayName);
+                
+                if (x.person.image && x.person.image.url) {
+                    el.find('img').attr('src', x.person.image.url + '?sz=60');
+                }
+                
+                if (x.hasMicrophone) { el.find('.capabilities').append('<span>Microphone<span>'); }
+                if (x.hasCamera) { el.find('.capabilities').append(' <span>Camera</span>'); }
+                
+                if (x.person.url) { el.find('.link').html('<a href="' + x.person.url + '">Profile</a>'); }
+                
+                // Ensure to add the element to the page, but also keep reference along with participant ID.
+                participants.parent.append(el);
+                participants.list[x.id] = el.get(0);
+            
+            });
+        
         } catch (e) {
         
-            console.error('Unexcepted exception has just happened in `participants.update`.');
-            console.exception(e);
+            console.log("Error encountered in `participants.update`:");
+            if (e.stack) { console.error(e.stack); } else { console.log(e); }
+            console.log("");
         
         }
     
     };
     
-    participants.appUpdate = function (participants) {
+    /**
+     * This function handles changes is participants' app status, marking
+     * the participants accordingly.
+     */
+    participants.appUpdate = function (updated) {
     
         try {
-    
-        var current_ids = Array.toArray(x$('section#participants ul li')).map('id');
-        participants
-            .map(function (x) { current_ids.some(x.id); })
-            .each(function (x) {
+        
+            if (typeof updated.enabledParticipants !== 'undefined') {
+                updated = updated.enabledParticipants;
+            }
             
-                var el = x$('#' + x.id);
-                if (x.hasAppEnabled) {
-                    el.removeClass('disabled');
-                } else {
+            var update_list = Object.extended();
+            updated.each(function (x) { update_list[x.id] = x; });
+            
+            participants.list.each(function (key, val) {
+            
+                var temp, el = $(val);
+            
+                if (!update_list.has(key)) {
                     el.addClass('disabled');
+                } else {
+                
+                    if (update_list[key].hasAppEnabled) {
+                        el.removeClass('disabled');
+                    } else {
+                        el.addClass('disabled');
+                    }
+                    
+                    temp = el.find('.capabilities').empty();
+                    if (update_list[key].hasMicrophone) { temp.append('<span>Microphone<span>'); }
+                    if (update_list[key].hasCamera) { temp.append(' <span>Camera</span>'); }
+                
                 }
             
             });
         
         } catch (e) {
         
-            console.error('Unexcepted exception has just happened in `participants.appUpdate`.');
-            console.exception(e);
+            console.log("Error encountered in `participants.appUpdate`:");
+            if (e.stack) { console.error(e.stack); } else { console.log(e); }
+            console.log("");
         
         }
     
@@ -110,14 +147,16 @@
     
         try {
     
-        gapi.hangout.onParticipantsChanged.add(participants.update);
-        gapi.hangout.onEnabledParticipantsChanged.add(participants.appUpdate);
-        participants.update(gapi.hangout.getParticipants());
+            gapi.hangout.onParticipantsChanged.add(participants.update);
+            gapi.hangout.onEnabledParticipantsChanged.add(participants.appUpdate);
+            console.log('Manual first-time update.');
+            participants.update(gapi.hangout.getParticipants());
         
         } catch (e) {
         
-            console.error('Unexcepted exception has just happened in `participant_init`.');
-            console.exception(e);
+            console.log("Error encountered in `participant_init`:");
+            if (e.stack) { console.error(e.stack); } else { console.log(e); }
+            console.log("");
         
         }
     
