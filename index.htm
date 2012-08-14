@@ -13,20 +13,26 @@
 				'load': [
 					'scripts/sugar-1.3-custom.development.js',
 					'scripts/zepto.js',
-					protocol + '//hangoutsapi.talkgadget.google.com/hangouts/api/hangout.js?v=1.0',
+					/*protocol + '//hangoutsapi.talkgadget.google.com/hangouts/api/hangout.js?v=1.0',*/
 					'scripts/scripts.js'
 				],
-				'complete': function () { gapi.hangout.onApiReady.add(window.init); }
+				'complete': function () { /*gapi.hangout.onApiReady.add(window.init);*/ }
 			});
 		}(window.location.protocol === 'https:' ? 'https:' : 'http:'));
 		</script>
 	</head>
 	<body>
+	
+		<div id="message">
+			<p></p>
+		</div>
+		
 		<header>
 			<h1>Sample Google+ Hangout App</h1>
 			<p>This ugly bit of screen here is where we test the functionality of Google Hangout API.</p>
 			<p>Check stuff out both here on the page and in the dev tools, where the console is.</p>
 		</header>
+		
 		<div id="modules">
 		
 			<section id="participants">
@@ -60,12 +66,16 @@
 			<section id="state">
 				<h2>Shared state</h2>
 				<p>Use the fields below to modify the shared state.</p>
-				<form action="" method="get">
+				<form id="stateForm" method="get">
 					<fieldset>
 						<div class="template"><input type="text" value="" class="key"> <input type="text" value="" class="value"> <button type="button">X</button></div>
 					</fieldset>
 					<button type="button" class="add">Add</button>
 					<button type="submit" class="submit">Update</button>
+				</form>
+				<form id="messageForm">
+					<input type="text" value="" placeholder="Enter your message here">
+					<button type="submit">Send message</button>
 				</form>
 			</section>
 			

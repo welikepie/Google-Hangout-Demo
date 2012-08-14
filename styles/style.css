@@ -74,16 +74,19 @@ td{vertical-align:top;}
 html{width:100%;height:100%;margin:0;padding:0;}
 body{width:900px;margin:16px;color:#333;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:normal;line-height:16px;}body h1{font-size:24px;line-height:24px;}
 body h1,body h2,body p{margin:0 0 8px;}
+#message{width:100%;height:80px;position:absolute;top:-80px;left:0;padding:16px 32px;font-size:16px;line-height:20px;background:rgba(255, 255, 255, 0.9);border-bottom:1px solid #999;transition:top 400ms ease-out;-o-transition:top 400ms ease-out;-moz-transition:top 400ms ease-out;-webkit-transition:top 400ms ease-out;}#message:before{content:'Message sent: ';display:block;}
+#message.open{top:0;}
 #modules{width:900px;margin:32px 0 0;padding:16px 0 0 16px;overflow:hidden;border:1px solid #999;background:#FAFAFA;}#modules>section{width:278px;margin:0 16px 16px 0;padding:8px;float:left;border:1px solid #999;background:#FFF;}#modules>section>h1,#modules>section>h2{margin:0 -8px 8px;padding:0 8px 8px;border-bottom:1px solid #999;font-size:16px;font-weight:bold;letter-spacing:0.1em;line-height:16px;}
 #participants ul{display:block;margin:0;padding:0;}#participants ul li{display:block;overflow:hidden;margin-top:16px;padding-top:16px;border-top:1px solid #AAA;opacity:1;}#participants ul li.disabled{opacity:0.6;}
 #participants ul li img{width:68px;float:left;margin-right:16px;padding-right:8px;border-right:1px solid #AAA;}
 #participants ul li table td{height:20px;}
 #participants ul li table th{display:none;}
 #participants ul li table .capabilities span{padding:2px;color:white;background:#666;border-radius:4px;}
-#state fieldset{margin:16px 0;}#state fieldset div+div{margin-top:4px;}
-#state fieldset button{width:10%;}
-#state fieldset input[readonly]{border-color:white;}
-#state fieldset input.key{width:35%;}
-#state fieldset input.value{width:50%;}
-#state .add{float:left;width:45%;}
-#state .submit{float:right;width:45%;}
+#state #stateForm{overflow:hidden;}#state #stateForm fieldset{margin:16px 0;}#state #stateForm fieldset div+div{margin-top:4px;}
+#state #stateForm fieldset button{width:10%;}
+#state #stateForm fieldset input[readonly]{border-color:white;}
+#state #stateForm fieldset input.key{width:35%;}
+#state #stateForm fieldset input.value{width:50%;}
+#state #stateForm .add{float:left;width:45%;}
+#state #stateForm .submit{float:right;width:45%;}
+#state #messageForm{margin-top:8px;padding-top:8px;border-top:1px solid #999;}#state #messageForm input{display:block;width:100%;margin-bottom:4px;}

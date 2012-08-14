@@ -13,15 +13,31 @@
             'appUpdate': null
         },
         state = {
-            'fieldset': $('section#state fieldset'),
-            'template': $('section#state fieldset div.template')
+            'form': $('section#state #stateForm'),
+            'fieldset': $('section#state #stateForm fieldset'),
+            'template': $('section#state #stateForm fieldset div.template')
                 .remove().removeClass('template'),
-            'update': null
+            'handling': {
+                'add': null,
+                'update': null,
+                'submit': null
+            },
+            'last': Object.extended(),
+            'messages': {
+                'queue': [],
+                'duration': 5000,
+                'form': $('section#state #messageForm'),
+                'display': null,
+                'send': null
+            }
         },
         
         participant_init,
         state_init,
         init;
+    
+    // PARTICIPANT HANDLING
+    // -------------------------------------
     
     /**
      * This function handles the change in the number of participants,
@@ -162,9 +178,232 @@
     
     };
     
+    // SHARED STATE HANDLING
+    // ------------------------------
+    
+    state.handling.add = function (key, val) {
+    
+        var el;
+        
+        try {
+        
+            el = state.template.clone();
+            
+            // Fill in the values if provided
+            if (typeof key === 'string') {
+                el.find('.key')
+                    .val(key)
+                    .attr('readonly', 'readonly');
+            }
+            if (typeof val === 'string') {
+                el.find('.value')
+                    .val(val)
+                    .attr('readonly', 'readonly');
+            }
+            
+            // Add event handling on input fields to
+            // make the borders disappear when finished editing
+            el.find('input')
+                .on('click focus', function () {
+                    this.readOnly = false;
+                })
+                .on('change blur', function () {
+                    this.readOnly = true;
+                });
+            
+            // Add event handling on the button to remove entry
+            el.find('button').on('click', function () {
+                $(this.parentNode).remove();
+            });
+            
+            state.fieldset.append(el);
+        
+        } catch (e) {
+        
+            console.log("Error encountered in `state.handling.add`:");
+            if (e.stack) { console.error(e.stack); } else { console.log(e); }
+            console.log("");
+        
+        }
+    
+    };
+    
+    state.handling.update = function (new_state) {
+    
+        try {
+        
+            if (typeof new_state.state !== 'undefined') {
+                new_state = new_state.state;
+            }
+            
+            // Update last encountered state
+            state.last = Object.extended(new_state);
+            
+            // Empty fieldset and add all the entries from last state
+            state.fieldset.empty();
+            state.last.each(state.handling.add);
+        
+        } catch (e) {
+        
+            console.log("Error encountered in `state.handling.update`:");
+            if (e.stack) { console.error(e.stack); } else { console.log(e); }
+            console.log("");
+        
+        }
+    
+    };
+    
+    state.handling.submit = function (ev) {
+    
+        var added, removed;
+    
+        ev.preventDefault();
+    
+        try {
+    
+            // Generate set of added and modified pairs
+            added = Object.extended();
+            state.fieldset.children().each(function () {
+            
+                var key = $(this).find('.key').val(),
+                    val = $(this).find('.value').val();
+                added[key] = val;
+            
+            });
+            
+            // Generate list of deleted properties
+            removed = state.last.keys().subtract(added.keys());
+            
+            // Submit state delta
+            gapi.hangout.data.submitDelta(added, removed);
+        
+        } catch (e) {
+        
+            console.log("Error encountered in `state.handling.submit`:");
+            if (e.stack) { console.error(e.stack); } else { console.log(e); }
+            console.log("");
+        
+        }
+    
+    };
+    
+    state.messages.display = function (message) {
+    
+        var in_display = false,
+            display_func;
+        
+        try {
+        
+            /* This anonymous display function lowers the message bar while filling it
+             * with first message in the message queue, then after a specified delay,
+             * raises it out of sight again. If there are more messages waiting in the
+             * queue, the message bit will lower with new message once again, calling
+             * itself recursively until the queue has been emptied.
+             */
+            display_func = function () {
+            
+                var text = state.message.queue.pop();
+                
+                // Mark message as visible (so that more incoming messages
+                // will end up on queue, not trigger display) and fill the element.
+                in_display = true;
+                $('#message')
+                    .addClass('open')
+                    .find('p').text(text);
+                
+                // Set the timeout to hide the message bar again
+                window.setTimeout(function () {
+                
+                    // This bit here will make the message bar
+                    // appear again if there are more messages
+                    // in the queue
+                    var end_func = function () {
+                    
+                        $('#message').off([
+                            'transitionend',
+                            'oTransitionEnd',
+                            'webkitTransitionEnd'
+                        ].join(' '));
+                        
+                        if (state.messages.queue.length) {
+                            display_func();
+                        } else {
+                            in_display = false;
+                        }
+                    
+                    };
+                    
+                    // Start hiding the message and ensure
+                    // end_func to run once it's hidden
+                    $('#message')
+                        .on([
+                            'transitionend',
+                            'oTransitionEnd',
+                            'webkitTransitionEnd'
+                        ].join(' '), end_func)
+                        .removeClass('open');
+                
+                }, state.messages.duration);
+            
+            };
+            
+            // Ensure it works with manual input AND events
+            if (typeof message.message === 'string') {
+                message = message.message;
+            }
+            
+            // Add message to the queues
+            state.messages.queue.add(message, 0);
+            
+            // Start displaying the message if message bar is not visible
+            if (!in_display) {
+                display_func();
+            }
+        
+        } catch (e) {
+        
+            console.log("Error encountered in ` state.messages.display`:");
+            if (e.stack) { console.error(e.stack); } else { console.log(e); }
+            console.log("");
+        
+        }
+    
+
+    
+    };
+    
+    state_init = function () {
+    
+        try {
+        
+            // Shared state handling
+            state.form.on('submit', state.handling.submit);
+            state.form.find('.add').on('click', state.handling.add);
+            gapi.hangout.data.onStateChanged.add(state.handling.update);
+            console.log("First-time shared state handling.");
+            state.handling.update(gapi.hangout.data.getState());
+    
+            // Message handling (not available in the API for some reason)
+            /*gapi.hangout.data.onMessageReceived.add(state.messages.display);
+            $('#messageForm').on('submit', function (ev) {
+                ev.preventDefault();
+                gapi.hangout.data.sendMessage($('[type="text"]', this).val());
+            });*/
+        
+        } catch (e) {
+        
+            console.log("Error encountered in `state_init`:");
+            if (e.stack) { console.error(e.stack); } else { console.log(e); }
+            console.log("");
+        
+        }
+    
+    };
+    
     init = function () {
         
         participant_init();
+        state_init();
         
     };
     
