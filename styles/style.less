@@ -156,3 +156,56 @@ body {
         }
     }
 }
+
+#facetrack {
+    .track_render {
+        padding: @base;
+        background: red;
+        position: absolute;
+        top: @base * 2; left: @base * 2;
+        overflow: hidden;
+        
+        background: white;
+        border: 1px solid #999;
+        
+        display: none;
+        &.open { display: block; }
+        
+        .canvas {
+            float: left;
+            width: 640px; height: 338px;
+            background: #EEE;
+        }
+        table {
+            float: left;
+            margin-left: @base;
+            
+            td, th {
+                padding-top: 1px;
+                padding-bottom: 1px;
+                vertical-align: top;
+                border-top: 1px solid #CCC;
+            }
+            th { padding-right: 10px; }
+            td {
+                padding-left: 8px; padding-right: 8px;
+                text-align: center;
+            }
+            
+            tr:first-child th, tr:first-child td { border-top: none; }
+            tbody + tbody tr:first-child { th, td { border-top: none; padding-top: 9px; } }
+            tbody + tbody tr:first-child {
+                th, td {
+                    padding-top: 9px;
+                    border-top: none;
+                }
+            }
+        }
+        .close {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            top: 2px; right: 2px;
+        }
+    }
+}

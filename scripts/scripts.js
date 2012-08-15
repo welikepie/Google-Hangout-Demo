@@ -384,11 +384,11 @@
             state.handling.update(gapi.hangout.data.getState());
     
             // Message handling (not available in the API for some reason)
-            /*gapi.hangout.data.onMessageReceived.add(state.messages.display);
+            gapi.hangout.data.onMessageReceived.add(state.messages.display);
             $('#messageForm').on('submit', function (ev) {
                 ev.preventDefault();
                 gapi.hangout.data.sendMessage($('[type="text"]', this).val());
-            });*/
+            });
         
         } catch (e) {
         

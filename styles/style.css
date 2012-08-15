@@ -90,3 +90,12 @@ body h1,body h2,body p{margin:0 0 8px;}
 #state #stateForm .add{float:left;width:45%;}
 #state #stateForm .submit{float:right;width:45%;}
 #state #messageForm{margin-top:8px;padding-top:8px;border-top:1px solid #999;}#state #messageForm input{display:block;width:100%;margin-bottom:4px;}
+#facetrack .track_render{padding:16px;background:red;position:absolute;top:32px;left:32px;overflow:hidden;background:white;border:1px solid #999;display:none;}#facetrack .track_render.open{display:block;}
+#facetrack .track_render .canvas{float:left;width:640px;height:338px;background:#EEE;}
+#facetrack .track_render table{float:left;margin-left:16px;}#facetrack .track_render table td,#facetrack .track_render table th{padding-top:1px;padding-bottom:1px;vertical-align:top;border-top:1px solid #CCC;}
+#facetrack .track_render table th{padding-right:10px;}
+#facetrack .track_render table td{padding-left:8px;padding-right:8px;text-align:center;}
+#facetrack .track_render table tr:first-child th,#facetrack .track_render table tr:first-child td{border-top:none;}
+#facetrack .track_render table tbody+tbody tr:first-child th,#facetrack .track_render table tbody+tbody tr:first-child td{border-top:none;padding-top:9px;}
+#facetrack .track_render table tbody+tbody tr:first-child th,#facetrack .track_render table tbody+tbody tr:first-child td{padding-top:9px;border-top:none;}
+#facetrack .track_render .close{width:20px;height:20px;position:absolute;top:2px;right:2px;}
