@@ -1,5 +1,5 @@
 /*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, strict:true, undef:true, unused:true, curly:true, browser:true, devel:true, indent:4, maxerr:50 */
-/*global $:true, gapi:true */
+/*global $:true, gapi:true, THREE:true */
 
 (function () {
     "use strict";
@@ -31,9 +31,28 @@
                 'send': null
             }
         },
+        facetrack = {
+            'modal': $('section#facetrack .track_render'),
+            'container': $('section#facetrack .track_render .canvas'),
+            'renderer': {
+                'size': [600, 338],
+                'visible': false,
+                'adjust': null
+            },
+            'measurements': {
+                'table': $('section#facetrack .track_render .measurements'),
+                'map': Object.extended(),
+                'update': null
+            },
+            'data': {
+                'last': null,
+                'last_good': null
+            }
+        },
         
         participant_init,
         state_init,
+        facetrack_init,
         init;
     
     // PARTICIPANT HANDLING
@@ -400,10 +419,223 @@
     
     };
     
+    // FACE TRACKING HANDLING
+    // ----------------------
+    
+    facetrack.renderer.adjust = function (obj) {
+    
+        var scales = {
+            'vertical': 200,
+            'horizontal': 400
+        };
+    
+        if (facetrack.data.last_good) {
+        
+            // Perform rotations on the ball
+            obj.rotation.y = facetrack.data.last_good.pan;
+            obj.rotation.x = - facetrack.data.last_good.roll;
+            obj.rotation.z = facetrack.data.last_good.tilt;
+        
+            obj.position.y = facetrack.data.last_good.noseRoot.y * scales.vertical * (-1);
+            obj.position.z = facetrack.data.last_good.noseRoot.x * scales.horizontal * (-1);
+        
+        }
+    
+    };
+    
+    facetrack.measurements.update = function (track_data) {
+    
+        try {
+        
+            // Update track data
+            facetrack.data.last = Object.extended(track_data);
+            if (track_data.hasFace) { facetrack.data.last_good = facetrack.data.last; }
+            
+            // Update measurements table if visible
+            if (facetrack.renderer.visible) {
+            
+                if (track_data.hasFace) {
+                    facetrack.data.last_good.each(function (key, val) {
+                    
+                        // Boolean values
+                        if (key === 'hasFace') {
+                            facetrack.measurements.map.hasFace.text('TRUE');
+                        // Single number values
+                        } else if (['pan', 'roll', 'tilt'].some(key)) {
+                            facetrack.measurements.map[key].text((val / Math.PI * 180).round(2) + ' degrees');
+                        // Double number values
+                        } else {
+                            facetrack.measurements.map[key][0].text(val.x.round(4));
+                            facetrack.measurements.map[key][1].text(val.y.round(4));
+                        }
+                    
+                    });
+                } else {
+                    facetrack.measurements.map.hasFace.text('FALSE');
+                }
+            
+            }
+        
+        } catch (e) {
+        
+            console.log("Error encountered in `facetrack.measurements.update`:");
+            if (e.stack) { console.error(e.stack); } else { console.log(e); }
+        
+        }
+    
+    };
+    
+    facetrack_init = function () {
+    
+        var render_func,
+            measurement_rows;
+        
+        try {
+    
+            // Face tracking renderer initialisation
+            (function () {
+            
+                var renderer,
+                    use_webgl,
+                    scene,
+                    camera,
+                    globe,
+                    texture;
+                
+                // Determine whether to use WebGL or Canvas renderer
+                (function () {
+                    var element = document.createElement('canvas');
+                    try { use_webgl = !!element.getContext('webgl') || !!element.getContext('experimental-webgl'); }
+                    catch (e) {  use_webgl = false; }
+                }());
+                
+                // Initialise the appropriate renderer
+                renderer = (use_webgl ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer());
+                renderer.setSize(facetrack.renderer.size[0], facetrack.renderer.size[1]);
+                facetrack.container.append(renderer.domElement);
+                scene = new THREE.Scene();
+                
+                // Initialise the camera
+                camera = new THREE.PerspectiveCamera(
+                    75,
+                    facetrack.renderer.size[0] / facetrack.renderer.size[1],
+                    1,
+                    10000
+                );
+                camera.position.x = 300;
+                camera.rotation.y = Math.PI / 2;
+                scene.add(camera);
+                
+                // Generate the texture for the face-tracking sphere
+                (function () {
+                
+                    var source,
+                        context,
+                        img;
+                    
+                    source = $(document.createElement('canvas'))
+                        .width(300)
+                        .height(150)
+                        .get(0);
+                    
+                    context = source.getContext('2d');
+                    context.fillStyle = 'gray';
+                    context.fillRect(0, 0, 300, 150);
+                    
+                    context.strokeStyle = 'black';
+                    context.lineWidth = 2;
+                    
+                    context.beginPath();
+                    context.arc(150, 75, 50, 0, Math.PI * 2, true); // Outer circle
+                    context.moveTo(185, 75);
+                    context.arc(150, 75, 35, 0, Math.PI, false);   // Mouth
+                    context.moveTo(140, 65);
+                    context.arc(135, 65, 5, 0, Math.PI * 2, true);  // Left eye
+                    context.moveTo(170, 65);
+                    context.arc(165, 65, 5, 0, Math.PI * 2, true);  // Right eye
+                    context.stroke();
+                    
+                    img = document.createElement('img');
+                    img.src = source.toDataURL();
+                    
+                    texture = new THREE.Texture(img);
+                    texture.needsUpdate = true;
+                
+                }());
+                
+                globe = new THREE.Mesh(
+                    new THREE.SphereGeometry(100, (use_webgl ? 40 : 24), (use_webgl ? 40 : 24)),
+                    new THREE.MeshBasicMaterial({ "map": texture })
+                );
+                scene.add(globe);
+                
+                render_func = function () {
+                
+                    //console.log('Rendering!');
+                
+                    // Perform adjustments to the globe first
+                    facetrack.renderer.adjust(globe);
+                    renderer.render(scene, camera);
+                    
+                    if (facetrack.renderer.visible) {
+                        window.requestAnimationFrame(render_func);
+                    }
+                
+                };
+            
+            }());
+        
+            // Measurement table initialisation
+            measurement_rows = facetrack.measurements.table.find('tr');
+            facetrack.measurements.map = {
+                'hasFace': measurement_rows.eq(0).find('td'),
+                'pan': measurement_rows.eq(1).find('td'),
+                'roll': measurement_rows.eq(2).find('td'),
+                'tilt': measurement_rows.eq(3).find('td'),
+                
+                'leftEye': measurement_rows.eq(4).find('td').selector.map($),
+                'leftEyebrowLeft': measurement_rows.eq(5).find('td').selector.map($),
+                'leftEyebrowRight': measurement_rows.eq(6).find('td').selector.map($),
+                'rightEye': measurement_rows.eq(7).find('td').selector.map($),
+                'rightEyebrowLeft': measurement_rows.eq(8).find('td').selector.map($),
+                'rightEyebrowRight': measurement_rows.eq(9).find('td').selector.map($),
+                
+                'noseRoot': measurement_rows.eq(10).find('td').selector.map($),
+                'noseTip': measurement_rows.eq(11).find('td').selector.map($),
+                'upperLip': measurement_rows.eq(12).find('td').selector.map($),
+                'lowerLip': measurement_rows.eq(13).find('td').selector.map($),
+                'mouthLeft': measurement_rows.eq(14).find('td').selector.map($),
+                'mouthCenter': measurement_rows.eq(15).find('td').selector.map($),
+                'mouthRight': measurement_rows.eq(16).find('td').selector.map($)
+            };
+            gapi.hangout.av.effects.onFaceTrackingDataChanged.add(facetrack.measurements.update);
+            //console.log("Measurements map: ", facetrack.measurements.map);
+            
+            // Interface initialisation
+            facetrack.modal.find('.close').on('click', function () {
+                facetrack.renderer.visible = false;
+                facetrack.modal.removeClass('open');
+            });
+            $(facetrack.modal.get(0).parentNode).find('.open_render').on('click', function () {
+                facetrack.renderer.visible = true;
+                facetrack.modal.addClass('open');
+                window.requestAnimationFrame(render_func);
+            });
+        
+        } catch (e) {
+        
+            console.log("Error encountered in `facetrack_init`:");
+            if (e.stack) { console.error(e.stack); } else { console.log(e); }
+        
+        }
+    
+    };
+    
     init = function () {
         
         participant_init();
         state_init();
+        facetrack_init();
         
     };
     
