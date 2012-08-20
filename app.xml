@@ -13,7 +13,107 @@
 		<title>Sample Google+ Hangout App</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
-		<link rel="stylesheet" href="https://raw.github.com/welikepie/Google-Hangout-Demo/master/styles/style.css" type="text/css">
+		<style type="text/css">
+		html{color:#000;background:#FFF;}
+		*{box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;}
+		body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,select,p,blockquote,th,td{margin:0;padding:0;}
+		table{border-collapse:collapse;border-spacing:0;}
+		fieldset,img{border:0;}
+		address,button,caption,cite,code,dfn,em,input,optgroup,option,select,strong,textarea,th,var{font:inherit;}
+		del,ins{text-decoration:none;}
+		li{list-style:none;}
+		caption,th{text-align:left;}
+		h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}
+		q:before,q:after{content:'';}
+		abbr,acronym{border:0;font-variant:normal;}
+		sup{vertical-align:baseline;}
+		sub{vertical-align:baseline;}
+		legend{color:#000;}
+		article,aside,details,figcaption,figure,footer,header,hgroup,nav,section{display:block;}
+		audio,canvas,video{display:inline-block;*display:inline;*zoom:1;}
+		audio:not([controls]){display:none;}
+		[hidden]{display:none;}
+		html{font-size:100%;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+		html,button,input,select,textarea{font-family:sans-serif;}
+		body{font-size:1em;line-height:1.4;}
+		::-moz-selection{text-shadow:none;}
+		::selection{text-shadow:none;}
+		a:focus{outline:thin dotted;}
+		a:hover,a:active{outline:0;}
+		abbr[title]{border-bottom:1px dotted;}
+		b,strong{font-weight:bold;}
+		blockquote{margin:1em 40px;}
+		dfn{font-style:italic;}
+		hr{display:block;height:1px;border:0;border-top:1px solid #ccc;margin:1em 0;padding:0;}
+		ins{background:#ff9;color:#000;text-decoration:none;}
+		mark{background:#ff0;color:#000;font-style:italic;font-weight:bold;}
+		pre,code,kbd,samp{font-family:monospace, serif;_font-family:'courier new',monospace;font-size:1em;}
+		pre{white-space:pre;white-space:pre-wrap;word-wrap:break-word;}
+		q{quotes:none;}
+		q:before,q:after{content:"";content:none;}
+		small{font-size:85%;}
+		sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline;}
+		sup{top:-0.5em;}
+		sub{bottom:-0.25em;}
+		ul,ol{margin:1em 0;padding:0 0 0 40px;}
+		dd{margin:0 0 0 40px;}
+		nav ul,nav ol{list-style:none;list-style-image:none;margin:0;padding:0;}
+		img{border:0;-ms-interpolation-mode:bicubic;vertical-align:middle;}
+		svg:not(:root){overflow:hidden;}
+		figure{margin:0;}
+		form{margin:0;}
+		fieldset{border:0;margin:0;padding:0;}
+		label{cursor:pointer;}
+		legend{border:0;*margin-left:-7px;padding:0;white-space:normal;}
+		button,input,select,textarea{font-size:100%;margin:0;vertical-align:baseline;*vertical-align:middle;}
+		button,input{line-height:normal;}
+		button,input[type="button"],input[type="reset"],input[type="submit"]{cursor:pointer;-webkit-appearance:button;*overflow:visible;}
+		button[disabled],input[disabled]{cursor:default;}
+		input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0;*width:13px;*height:13px;}
+		input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box;}
+		input[type="search"]::-webkit-search-decoration,input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none;}
+		button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0;}
+		textarea{overflow:auto;vertical-align:top;resize:vertical;}
+		input:invalid,textarea:invalid{background-color:#f0dddd;}
+		table{border-collapse:collapse;border-spacing:0;}
+		td{vertical-align:top;}
+		.chromeframe{margin:0.2em 0;background:#ccc;color:black;padding:0.2em 0;}
+		.ir{border:0;font:0/0 a;text-shadow:none;color:transparent;background-color:transparent;}
+		.hidden{display:none !important;visibility:hidden;}
+		.visuallyhidden{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;}
+		.visuallyhidden.focusable:active,.visuallyhidden.focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto;}
+		.invisible{visibility:hidden;}
+		.clearfix{*zoom:1;}.clearfix:before,.clearfix:after{content:"";display:table;}
+		.clearfix:after{clear:both;}
+		html{width:100%;height:100%;margin:0;padding:0;}
+		body{width:900px;margin:16px;color:#333;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:normal;line-height:16px;}body h1{font-size:24px;line-height:24px;}
+		body h1,body h2,body p{margin:0 0 8px;}
+		#message{width:100%;height:80px;position:absolute;top:-80px;left:0;padding:16px 32px;font-size:16px;line-height:20px;background:rgba(255, 255, 255, 0.9);border-bottom:1px solid #999;transition:top 400ms ease-out;-o-transition:top 400ms ease-out;-moz-transition:top 400ms ease-out;-webkit-transition:top 400ms ease-out;}#message:before{content:'Message sent: ';display:block;}
+		#message.open{top:0;}
+		#modules{width:900px;margin:32px 0 0;padding:16px 0 0 16px;overflow:hidden;border:1px solid #999;background:#FAFAFA;}#modules>section{width:278px;margin:0 16px 16px 0;padding:8px;float:left;border:1px solid #999;background:#FFF;}#modules>section>h1,#modules>section>h2{margin:0 -8px 8px;padding:0 8px 8px;border-bottom:1px solid #999;font-size:16px;font-weight:bold;letter-spacing:0.1em;line-height:16px;}
+		#participants ul{display:block;margin:0;padding:0;}#participants ul li{display:block;overflow:hidden;margin-top:16px;padding-top:16px;border-top:1px solid #AAA;opacity:1;}#participants ul li.disabled{opacity:0.6;}
+		#participants ul li img{width:68px;float:left;margin-right:16px;padding-right:8px;border-right:1px solid #AAA;}
+		#participants ul li table td{height:20px;}
+		#participants ul li table th{display:none;}
+		#participants ul li table .capabilities span{padding:2px;color:white;background:#666;border-radius:4px;}
+		#state #stateForm{overflow:hidden;}#state #stateForm fieldset{margin:16px 0;}#state #stateForm fieldset div+div{margin-top:4px;}
+		#state #stateForm fieldset button{width:10%;}
+		#state #stateForm fieldset input[readonly]{border-color:white;}
+		#state #stateForm fieldset input.key{width:35%;}
+		#state #stateForm fieldset input.value{width:50%;}
+		#state #stateForm .add{float:left;width:45%;}
+		#state #stateForm .submit{float:right;width:45%;}
+		#state #messageForm{margin-top:8px;padding-top:8px;border-top:1px solid #999;}#state #messageForm input{display:block;width:100%;margin-bottom:4px;}
+		#facetrack .track_render{padding:16px;background:red;position:absolute;top:32px;left:32px;overflow:hidden;background:white;border:1px solid #999;display:none;}#facetrack .track_render.open{display:block;}
+		#facetrack .track_render .canvas{float:left;width:640px;height:338px;background:#EEE;}
+		#facetrack .track_render table{float:left;margin-left:16px;}#facetrack .track_render table td,#facetrack .track_render table th{padding-top:1px;padding-bottom:1px;vertical-align:top;border-top:1px solid #CCC;}
+		#facetrack .track_render table th{padding-right:10px;}
+		#facetrack .track_render table td{padding-left:8px;padding-right:8px;text-align:center;}
+		#facetrack .track_render table tr:first-child th,#facetrack .track_render table tr:first-child td{border-top:none;}
+		#facetrack .track_render table tbody+tbody tr:first-child th,#facetrack .track_render table tbody+tbody tr:first-child td{border-top:none;padding-top:9px;}
+		#facetrack .track_render table tbody+tbody tr:first-child th,#facetrack .track_render table tbody+tbody tr:first-child td{padding-top:9px;border-top:none;}
+		#facetrack .track_render .close{width:20px;height:20px;position:absolute;top:2px;right:2px;}
+		</style>
 		<script type="text/javascript" src="https://raw.github.com/SlexAxton/yepnope.js/master/yepnope.1.5.4-min.js"></script>
 		<script type="text/javascript">
 		(function (protocol) {
