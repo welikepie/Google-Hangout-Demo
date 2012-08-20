@@ -50,7 +50,7 @@
             },
             'overlays': Object.extended({
                 'both_eyes': {
-                    'url': 'https://dev.welikepie.com/~though30/welikepie.com/dev/gapi/images/glasses.png',
+                    'url': 'https://raw.github.com/welikepie/Google-Hangout-Demo/master/images/glasses.png',
                     'scale': 0.55,
                     'rotation': 0,
                     'offset': {'x': 0, 'y': -0.075},
@@ -61,7 +61,7 @@
                     'tracker': null
                 },
                 'single_eye': {
-                    'url': 'https://dev.welikepie.com/~though30/welikepie.com/dev/gapi/images/eyepatch.png',
+                    'url': 'https://raw.github.com/welikepie/Google-Hangout-Demo/master/images/eyepatch.png',
                     'scale': 0.525,
                     'rotation': 0,
                     'offset': {'x': -0.25, 'y': -0.08},
