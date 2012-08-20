@@ -13,18 +13,18 @@
 		<title>Sample Google+ Hangout App</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
-		<link rel="stylesheet" href="https://raw.github.com/welikepie/Google-Hangout-Demo/master/styles/style.css" type="text/css">
+		<link rel="stylesheet" href="https://welikepie.github.com/Google-Hangout-Demo/styles/style.css" type="text/css">
 		<script type="text/javascript" src="https://raw.github.com/SlexAxton/yepnope.js/master/yepnope.1.5.4-min.js"></script>
 		<script type="text/javascript">
 		(function (protocol) {
 			"use strict";
 			yepnope({
 				'load': [
-					'https://raw.github.com/welikepie/Google-Hangout-Demo/master/scripts/zepto.js',
-					'https://raw.github.com/welikepie/Google-Hangout-Demo/master/scripts/sugar-1.3-custom.development.js',
+					'https://welikepie.github.com/Google-Hangout-Demo/scripts/zepto.js',
+					'https://welikepie.github.com/Google-Hangout-Demo/scripts/sugar-1.3-custom.development.js',
 					'https://raw.github.com/mrdoob/three.js/master/build/three.min.js',
 					'https://hangoutsapi.talkgadget.google.com/hangouts/api/hangout.js?v=1.1',
-					'https://raw.github.com/welikepie/Google-Hangout-Demo/master/scripts/scripts.js'
+					'https://welikepie.github.com/Google-Hangout-Demo/scripts/scripts.js'
 				],
 				'complete': function () { gapi.hangout.onApiReady.add(window.init); }
 			});
