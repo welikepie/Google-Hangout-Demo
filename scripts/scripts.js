@@ -508,7 +508,7 @@ var averageInformation = new Array();
     							}
     							
     						});
-    					});
+    					}
 			  		panAverage = panAverage/n;
 			  		rollAverage = rollAverage/n;
 			  		tiltAverage = tiltAverage/n;
