@@ -449,9 +449,9 @@ var lastInformation = new Array();
 var averageInformation = new Array();
 var panAverage = 0;
 var rollAverage = 0;
-var tiltaverage = 0;
-var xaverage = 0;
-var yaverage = 0;
+var tiltAverage = 0;
+var xAverage = 0;
+var yAverage = 0;
 
 
     facetrack.renderer.adjust = function (obj) {
