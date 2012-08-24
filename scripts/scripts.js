@@ -487,8 +487,9 @@ var averageInformation = new Array();
                 	if(lastInformation.length==n){
                 		lastInformation.splice(n-1,1);
             			//var panAverage, rollAverage, tiltaverage, xaverage, yaverage;
-    					lastInformation.each( function(keys,value){
-    						value.each( function(key,val){				
+    					for(var i = 0; i >= n; i++){
+    						
+    						lastInformation[i].each( function(key,val){				
     							console.log(key+","+val);
     							if(key==='pan'){
     							panAverage = val + panAverage;
