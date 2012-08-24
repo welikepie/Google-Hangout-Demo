@@ -446,7 +446,7 @@
     // FACE TRACKING HANDLING
     // ----------------------
 var lastInformation = new Array();
-var panAverage, rollAverage, tiltAverage, xAverage, yAverage;
+var averageInformation = new Array();
 
 
     facetrack.renderer.adjust = function (obj) {
@@ -481,26 +481,40 @@ var panAverage, rollAverage, tiltAverage, xAverage, yAverage;
             if (facetrack.renderer.visible) {
 
                 if (track_data.hasFace) {
-                	
+             console.log(lastInformation.length);   	
   
                 	lastInformation.push(facetrack.data.last_good);
-                	if(lastInformation.length==n+1){
-                		lastInformation[n+1]==null;
+                	if(lastInformation.length==n){
+                		lastInformation[n]==null;
             			//var panAverage, rollAverage, tiltaverage, xaverage, yaverage;
-    					lastInformation.each( function(key,val){
-    										
-    						console.log(key+","+val);
-    						
-    					
-    						
-    						
+    					lastInformation.each( function(keys,value){
+    						val.each(function(key,val){				
+    							console.log(key+","+val);
+    							if(key==='pan'){
+    								panAverage += val ;
+    							}
+    							
+    							if(key==='roll'){
+    								rollAverage += val ;
+    							}
+    							
+    							if(key==='tilt'){
+    								tiltAverage += val ;
+    							}
+    							if(key==='noseRoot'){
+    							xAverage+=val[0];
+    							yAverage+=val[1];	
+    							}
+    							
+    						});
     					});
 			  		panAverage = panAverage/n;
 			  		rollAverage = rollAverage/n;
 			  		tiltAverage = tiltAverage/n;
 			  		xAverage = xAverage/n;
 			  		yAverage = yAverage/n;
-                	}              	
+			  	console.log(panAverage+","+rollAverage+","+tiltAverage+","+xAverage+","+yAverage);	
+                }              	
                 	
                     facetrack.data.last_good.each(function (key, val) {
 							
