@@ -485,13 +485,13 @@ var averageInformation = new Array();
   
                 	lastInformation.push(facetrack.data.last_good);
                 	if(lastInformation.length==n){
-                		lastInformation[n]==null;
+                		lastInformation.splice(n,1);
             			//var panAverage, rollAverage, tiltaverage, xaverage, yaverage;
     					lastInformation.each( function(keys,value){
-    						val.each(function(key,val){				
+    						value.each(function(key,val){				
     							console.log(key+","+val);
     							if(key==='pan'){
-    								panAverage += val ;
+    							panAverage += val ;
     							}
     							
     							if(key==='roll'){
