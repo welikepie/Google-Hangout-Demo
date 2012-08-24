@@ -513,11 +513,11 @@ var yAverage = 0;
     							
     						});
     					}
-			  		panAverage = panAverage/n;
+			  	/*	panAverage = panAverage/n;
 			  		rollAverage = rollAverage/n;
 			  		tiltAverage = tiltAverage/n;
 			  		xAverage = xAverage/n;
-			  		yAverage = yAverage/n;
+			  		yAverage = yAverage/n; */
 			  	console.log(panAverage+","+rollAverage+","+tiltAverage+","+xAverage+","+yAverage);	
                 }              	
                 	
