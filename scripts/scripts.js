@@ -447,6 +447,11 @@
     // ----------------------
 var lastInformation = new Array();
 var averageInformation = new Array();
+var panAverage = 0;
+var rollAverage = 0;
+var tiltaverage = 0;
+var xaverage = 0;
+var yaverage = 0;
 
 
     facetrack.renderer.adjust = function (obj) {
@@ -486,7 +491,6 @@ var averageInformation = new Array();
                 	lastInformation.push(facetrack.data.last_good);
                 	if(lastInformation.length==n){
                 		lastInformation.splice(n-1,1);
-            			//var panAverage, rollAverage, tiltaverage, xaverage, yaverage;
     					for(var i = 0; i >= n; i++){
     						
     						lastInformation[i].each( function(key,val){				
