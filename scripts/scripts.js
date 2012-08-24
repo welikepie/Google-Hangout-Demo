@@ -3,7 +3,8 @@
 
 (function () {
     "use strict";
-
+	var n = 6; //(n is points of data to smooth over)
+	console.log(n);
     var participants = {
             'list': Object.extended(),
             'parent': $('section#participants ul'),
@@ -444,6 +445,9 @@
 
     // FACE TRACKING HANDLING
     // ----------------------
+var lastInformation = new Array();
+var panAverage, rollAverage, tiltAverage, xAverage, yAverage;
+
 
     facetrack.renderer.adjust = function (obj) {
 
@@ -464,23 +468,42 @@
             obj.position.z = facetrack.data.last_good.noseRoot.x * scales.horizontal * (-1);
 
         }
-
     };
 
     facetrack.measurements.update = function (track_data) {
-
         try {
 
-            // Update track data
+            //Update track data
             facetrack.data.last = Object.extended(track_data);
             if (track_data.hasFace) { facetrack.data.last_good = facetrack.data.last; }
 
-            // Update measurements table if visible
+            //Update measurements table if visible
             if (facetrack.renderer.visible) {
 
                 if (track_data.hasFace) {
+                	
+  
+                	lastInformation.push(facetrack.data.last_good);
+                	if(lastInformation.length==n+1){
+                		lastInformation[n+1]==null;
+            			//var panAverage, rollAverage, tiltaverage, xaverage, yaverage;
+    					lastInformation.each( function(key,val){
+    										
+    						console.log(key+","+val);
+    						
+    					
+    						
+    						
+    					});
+			  		panAverage = panAverage/n;
+			  		rollAverage = rollAverage/n;
+			  		tiltAverage = tiltAverage/n;
+			  		xAverage = xAverage/n;
+			  		yAverage = yAverage/n;
+                	}              	
+                	
                     facetrack.data.last_good.each(function (key, val) {
-
+							
                         // Boolean values
                         if (key === 'hasFace') {
                             facetrack.measurements.map.hasFace.text('TRUE');
