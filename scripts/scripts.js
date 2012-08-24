@@ -485,25 +485,25 @@ var averageInformation = new Array();
   
                 	lastInformation.push(facetrack.data.last_good);
                 	if(lastInformation.length==n){
-                		lastInformation.splice(n,1);
+                		lastInformation.splice(n-1,1);
             			//var panAverage, rollAverage, tiltaverage, xaverage, yaverage;
     					lastInformation.each( function(keys,value){
-    						value.each(function(key,val){				
+    						value.each( function(key,val){				
     							console.log(key+","+val);
     							if(key==='pan'){
-    							panAverage += val ;
+    							panAverage = val + panAverage;
     							}
     							
     							if(key==='roll'){
-    								rollAverage += val ;
+    								rollAverage = val + rollAverage ;
     							}
     							
     							if(key==='tilt'){
-    								tiltAverage += val ;
+    								tiltAverage = val + tiltAverage ;
     							}
     							if(key==='noseRoot'){
-    							xAverage+=val[0];
-    							yAverage+=val[1];	
+    							xAverage = val[0] + xAverage;
+    							yAverage = val[1] + yAverage;	
     							}
     							
     						});
