@@ -704,8 +704,8 @@ input[type="submit"].btn.btn-mini {
 }
 
 /* POSITIONING CONTROLS */
-#types {
-	display: table;
+/*#types {
+	display: none;
 	overflow: hidden;
 	width: 100%;
 	margin: 0 0 16px;
@@ -721,4 +721,4 @@ input[type="submit"].btn.btn-mini {
 }
 #position label input {
 	float: right;
-}
+}*/

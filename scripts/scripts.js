@@ -10,36 +10,36 @@
             'antlers': {
                 'url': base_url + 'images/overlays/antlers.png',
                 'trackingFeature': gapi.hangout.av.effects.FaceTrackingFeature.NOSE_ROOT,
-                'offset': {'x': 0, 'y': 0},
-                'scale': 1,
-                'rotation': 0,                
+                'offset': {'x': 0, 'y': -1},
+                'scale': 0.95,
+                'rotation': 0,
                 'scaleWithFace': true,
                 'rotateWithFace': true
             },
             'fox': {
                 'url': base_url + 'images/overlays/fox.png',
                 'trackingFeature': gapi.hangout.av.effects.FaceTrackingFeature.NOSE_ROOT,
-                'offset': {'x': 0, 'y': 0},
-                'scale': 1,
-                'rotation': 0,                
+                'offset': {'x': -0.15, 'y': -0.55},
+                'scale': 1.3,
+                'rotation': 0,
                 'scaleWithFace': true,
                 'rotateWithFace': true
             },
             'moose': {
                 'url': base_url + 'images/overlays/moose.png',
                 'trackingFeature': gapi.hangout.av.effects.FaceTrackingFeature.NOSE_ROOT,
-                'offset': {'x': 0, 'y': 0},
-                'scale': 1,
-                'rotation': 0,                
+                'offset': {'x': 0, 'y': -0.4},
+                'scale': 1.7,
+                'rotation': 0,
                 'scaleWithFace': true,
                 'rotateWithFace': true
             },
             'rabbit': {
                 'url': base_url + 'images/overlays/rabbit.png',
                 'trackingFeature': gapi.hangout.av.effects.FaceTrackingFeature.NOSE_ROOT,
-                'offset': {'x': 0, 'y': 0},
-                'scale': 1,
-                'rotation': 0,                
+                'offset': {'x': 0.05, 'y': -0.85},
+                'scale': 0.95,
+                'rotation': (-5 * Math.PI / 180),
                 'scaleWithFace': true,
                 'rotateWithFace': true
             }
@@ -85,7 +85,7 @@
         toggle_display(this.id);
     });
     
-    var selected = null,
+    /*var selected = null,
         change_func,
         input_func;
     
@@ -160,6 +160,6 @@
     };
     
     $('#types input').on('change', change_func);
-    $('#position').on('submit', function (ev) { ev.preventDefault(); }).on('input', input_func);
+    $('#position').on('submit', function (ev) { ev.preventDefault(); }).on('input', input_func);*/
 
 }());
