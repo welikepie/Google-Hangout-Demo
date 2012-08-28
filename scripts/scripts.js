@@ -47,119 +47,126 @@
         },
         internals = {},
 
-        toggle_display = function (type) {
+        selected = null,
+        load_position_values,
+        apply_position_values,
+        toggle_display;
 
-            // Validate existence of overlay type
-            if (!(type in overlays)) { throw new Error('`' + type + '` is not a valid overlay type.'); }
+    toggle_display = function (type) {
 
-            // If first call to toggle, assume the image has not been loaded
-            if (!(type in internals)) {
+        var item;
 
-                console.log("Will attempt creating image resources from: ", overlays[type].url);
+        // Validate existence of overlay type
+        if (!(type in overlays)) { throw new Error('`' + type + '` is not a valid overlay type.'); }
 
-                internals[type] = {
-                    'resource': gapi.hangout.av.effects.createImageResource(overlays[type].url),
-                    'overlay': null
-                };
+        // If first call to toggle, assume the image has not been loaded
+        if (!(type in internals)) {
 
-                internals[type].overlay = internals[type].resource.createFaceTrackingOverlay({
-                    'scale': overlays[type].scale,
-                    'rotation': overlays[type].rotation,
-                    'offset': overlays[type].offset,
-                    'scaleWithFace': overlays[type].scaleWithFace,
-                    'rotateWithFace': overlays[type].rotateWithFace,
-                    'trackingFeature': overlays[type].trackingFeature
-                });
-                internals[type].overlay.setVisible(true);
+            internals[type] = {
+                'resource': gapi.hangout.av.effects.createImageResource(overlays[type].url),
+                'overlay': null
+            };
 
-            } else {
-                internals[type].overlay.setVisible(!internals[type].overlay.isVisible());
+            internals[type].overlay = internals[type].resource.createFaceTrackingOverlay({
+                'scale': overlays[type].scale,
+                'rotation': overlays[type].rotation,
+                'offset': overlays[type].offset,
+                'scaleWithFace': overlays[type].scaleWithFace,
+                'rotateWithFace': overlays[type].rotateWithFace,
+                'trackingFeature': overlays[type].trackingFeature
+            });
+            selected = type;
+            for (item in internals) {
+                if (internals.hasOwnProperty(item)) {
+                    internals[item].overlay.setVisible(item === type);
+                }
             }
+            load_position_values();
 
-        };
-
-    console.log("Base URL: ", base_url);
-
-    $('#overlays button').on('click', function () {
-        console.log("Button clicked with type: ", this.id);
-        toggle_display(this.id);
-    });
-    
-    /*var selected = null,
-        change_func,
-        input_func;
-    
-    // POSITIONING CONTROLS
-    change_func = function (ev) {
-    
-        var temp,
-            overlay,
-            form = $('#position');
-    
-        ev.preventDefault();
-        if (this.checked) {
-        
-            if (this.value in internals) {
-            
-                selected = this.value;
-            
-                overlay = internals[this.value].overlay;
-                
-                temp = Math.round(overlay.getScale() * 100) / 100;
-                form.find('[name="scale"]').val(temp);
-                
-                temp = Math.round(overlay.getRotation() * 180 / Math.PI);
-                form.find('[name="rotation"]').val(temp);
-                
-                temp = Math.round(overlay.getOffset().x * 100) / 100;
-                form.find('[name="offset_x"]').val(temp);
-                
-                temp = Math.round(overlay.getOffset().y * 100) / 100;
-                form.find('[name="offset_y"]').val(temp);
-                
-                input_func();
-            
-            } else {
-                alert('You need to initialise the overlay first.');
+        } else {
+            selected = type;
+            for (item in internals) {
+                if (internals.hasOwnProperty(item)) {
+                    internals[item].overlay.setVisible(item === type);
+                }
             }
-        
+            load_position_values();
         }
-    
+
     };
-    
-    input_func = function () {
-    
+
+    load_position_values = function () {
+
         var temp,
             form,
             overlay;
-    
+
         if (selected) {
         
             form = $('#position');
             overlay = internals[selected].overlay;
-            
-            temp = Math.round(parseFloat(form.find('[name="scale"]').val()) * 100) / 100;
-            form.find('output[for="scale"]').val(temp);
+
+            temp = Math.round(overlay.getScale() * 100) / 100;
+            form.find('[data-name="scale"]').slider('value', temp);
+
+            temp = Math.round(overlay.getRotation() * 180 / Math.PI);
+            form.find('[data-name="rotation"]').slider('value', temp);
+
+            temp = Math.round(overlay.getOffset().x * 100) / 100;
+            form.find('[data-name="offset_x"]').slider('value', temp);
+
+            temp = Math.round(overlay.getOffset().y * 100) / 100;
+            form.find('[data-name="offset_y"]').slider('value', temp);
+
+        }
+
+    };
+
+    apply_position_values = function () {
+
+        var temp,
+            form,
+            overlay;
+
+        if (selected) {
+
+            form = $('#position');
+            overlay = internals[selected].overlay;
+
+            temp = Math.round(parseFloat(form.find('[data-name="scale"]').slider('value')) * 100) / 100;
+            //form.find('output[for="scale"]').val(temp);
             overlay.setScale(temp);
-            
-            temp = parseInt(form.find('[name="rotation"]').val(), 10);
-            form.find('output[for="rotation"]').val(temp);
+
+            temp = parseInt(form.find('[data-name="rotation"]').slider('value'), 10);
+            //form.find('output[for="rotation"]').val(temp);
             temp = temp * Math.PI / 180;
             overlay.setRotation(temp);
-            
+
             temp = {
-                'x': Math.round(parseFloat(form.find('[name="offset_x"]').val()) * 100) / 100,
-                'y': Math.round(parseFloat(form.find('[name="offset_y"]').val()) * 100) / 100
+                'x': Math.round(parseFloat(form.find('[data-name="offset_x"]').slider('value')) * 100) / 100,
+                'y': Math.round(parseFloat(form.find('[data-name="offset_y"]').slider('value')) * 100) / 100
             };
-            form.find('output[for="offset_x"]').val(temp.x);
-            form.find('output[for="offset_y"]').val(temp.y);
+            //form.find('output[for="offset_x"]').val(temp.x);
+            //form.find('output[for="offset_y"]').val(temp.y);
             overlay.setOffset(temp);
-        
+
         }
-    
+
     };
-    
-    $('#types input').on('change', change_func);
-    $('#position').on('submit', function (ev) { ev.preventDefault(); }).on('input', input_func);*/
+
+    $('#overlays button').on('click', function () { toggle_display(this.id); });
+    $('#position span[data-name]').each(function () {
+
+        console.log(this);
+        var el = $(this);
+        el.slider({
+            'value': parseFloat(el.attr('data-value')),
+            'min': parseFloat(el.attr('data-min')),
+            'max': parseFloat(el.attr('data-max')),
+            'step': parseFloat(el.attr('data-step')),
+            'slide': apply_position_values
+        });
+
+    });
 
 }());
