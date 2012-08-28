@@ -7,6 +7,7 @@ html {
 body {
 	width: 268px;
 	padding: 16px;
+	overflow-y: scroll;
 	
 	color: #333;
 	font: normal 14px/20px "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -700,4 +701,24 @@ input[type="submit"].btn.btn-mini {
 	margin: 0 16px 16px 0;
 	
 	line-height: 0;
+}
+
+/* POSITIONING CONTROLS */
+#types {
+	display: table;
+	overflow: hidden;
+	width: 100%;
+	margin: 0 0 16px;
+	padding: 0;
+}
+#types li {
+	display: table-cell;
+}
+#position label {
+	display: inline-block;
+	width: 220px;
+	overflow: hidden;
+}
+#position label input {
+	float: right;
 }

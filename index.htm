@@ -18,8 +18,20 @@
 			<button type="button" class="btn btn-inverse" id="moose"><img src="images/overlays/moose-thumbnail.png" alt="Moose Antlers"></button>
 			<button type="button" class="btn btn-inverse" id="rabbit"><img src="images/overlays/rabbit-thumbnail.png" alt="Rabbit Ears"></button>
 		</div>
+		<ul id="types">
+			<li><label><input type="radio" name="overlay" value="antlers"> Antlers</label></li>
+			<li><label><input type="radio" name="overlay" value="fox"> Fox</label></li>
+			<li><label><input type="radio" name="overlay" value="moose"> Moose</label></li>
+			<li><label><input type="radio" name="overlay" value="rabbit"> Rabbit</label></li>
+		</ul>
+		<form id="position">
+			<div><label>Scale: <input type="range" name="scale" min="0" max="2" step="0.01"></label> | <output for="scale"></div>
+			<div><label>Rotation: <input type="range" name="rotation" min="-90" max="90" step="1"></label> | <output for="rotation">°</div>
+			<div><label>Offset X: <input type="range" name="offset_x" min="-1" max="1" step="0.01"></label> | <output for="offset_x"></div>
+			<div><label>Offset Y: <input type="range" name="offset_y" min="-1" max="1" step="0.01"></label> | <output for="offset_y"></div>
+		</form>
 	</body>
 	<script type="text/javascript" src="scripts/zepto.min.js"></script>
-	<script type="text/javascript" src="https://hangoutsapi.talkgadget.google.com/hangouts/api/hangout.js?v=1.1"></script>
+	<script type="text/javascript" src="https://hangoutsapi.talkgadget.google.com/hangouts/api/hangout.js?v=1.2"></script>
 	<script type="text/javascript" src="scripts/scripts.js"></script>
 </html>

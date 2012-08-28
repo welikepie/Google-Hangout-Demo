@@ -84,5 +84,82 @@
         console.log("Button clicked with type: ", this.id);
         toggle_display(this.id);
     });
+    
+    var selected = null,
+        change_func,
+        input_func;
+    
+    // POSITIONING CONTROLS
+    change_func = function (ev) {
+    
+        var temp,
+            overlay,
+            form = $('#position');
+    
+        ev.preventDefault();
+        if (this.checked) {
+        
+            if (this.value in internals) {
+            
+                selected = this.value;
+            
+                overlay = internals[this.value].overlay;
+                
+                temp = Math.round(overlay.getScale() * 100) / 100;
+                form.find('[name="scale"]').val(temp);
+                
+                temp = Math.round(overlay.getRotation() * 180 / Math.PI);
+                form.find('[name="rotation"]').val(temp);
+                
+                temp = Math.round(overlay.getOffset().x * 100) / 100;
+                form.find('[name="offset_x"]').val(temp);
+                
+                temp = Math.round(overlay.getOffset().y * 100) / 100;
+                form.find('[name="offset_y"]').val(temp);
+                
+                input_func();
+            
+            } else {
+                alert('You need to initialise the overlay first.');
+            }
+        
+        }
+    
+    };
+    
+    input_func = function () {
+    
+        var temp,
+            form,
+            overlay;
+    
+        if (selected) {
+        
+            form = $('#position');
+            overlay = internals[selected].overlay;
+            
+            temp = Math.round(parseFloat(form.find('[name="scale"]').val()) * 100) / 100;
+            form.find('output[for="scale"]').val(temp);
+            overlay.setScale(temp);
+            
+            temp = parseInt(form.find('[name="rotation"]').val(), 10);
+            form.find('output[for="rotation"]').val(temp);
+            temp = temp * Math.PI / 180;
+            overlay.setRotation(temp);
+            
+            temp = {
+                'x': Math.round(parseFloat(form.find('[name="offset_x"]').val()) * 100) / 100,
+                'y': Math.round(parseFloat(form.find('[name="offset_y"]').val()) * 100) / 100
+            };
+            form.find('output[for="offset_x"]').val(temp.x);
+            form.find('output[for="offset_y"]').val(temp.y);
+            overlay.setOffset(temp);
+        
+        }
+    
+    };
+    
+    $('#types input').on('change', change_func);
+    $('#position').on('submit', function (ev) { ev.preventDefault(); }).on('input', input_func);
 
 }());
